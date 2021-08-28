@@ -1,0 +1,19 @@
+* {
+  box-sizing: border-box;
+}
+
+.content {
+  width: 50%;
+  height: 800px;
+  border-right: 1px solid black;
+}
+
+.heading {
+  border-bottom: 1px solid black;
+  width: 100%;
+  text-align: center;
+}
+
+.list {
+  width: 100%;
+}
