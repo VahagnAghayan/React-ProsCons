@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 // import { useSelector } from 'react-redux';
 
 import ListItem from '../List-item/List-item';
@@ -21,7 +21,7 @@ function List({ heading, globId }) {
   const [prosState,setProsState] = useState(defaultProsState);
   const [consState,setConsState] = useState(defaultConsState);
 
-  const inputHandler = useCallback((e,id,index,heading,globId) => {
+  function inputHandler(e,id,index,heading,globId) {
     if(heading === 'Pros') {
       const newState = [...prosState];
       let value = e.target.value;
@@ -54,11 +54,12 @@ function List({ heading, globId }) {
       }
     setConsState(newState);
     }
-  }, [])
+  }
 
-  const dragStartHandler = useCallback((e,id,index,heading,globId) => {
+  function dragStartHandler(e,id,index,heading,globId) {
     e.dataTransfer.setData('currentIndex', index);
     e.dataTransfer.setData('currentHeading', heading);
+    e.dataTransfer.setData('currentValue', e.target.value);
     // if(heading === 'Pros') {
     //   const newState = [...prosState];
     //   newState.splice(index,1);
@@ -69,11 +70,34 @@ function List({ heading, globId }) {
     //   newState.splice(index,1);
     //   setConsState(newState);
     // }
-  }, [])
+  }
   function dropHandler(e) {
     let dragId = e.dataTransfer.getData('currentIndex');
     let dragHeading = e.dataTransfer.getData('currentHeading');
-    let dropHeadingId = e.target.id;
+    let item = e.dataTransfer.getData('currentValue');
+    // console.log(dragId);
+    // let dropHeadingId = e.target.id;
+    if(!item) {
+      return;
+    }
+    if(dragHeading === 'Pros') {
+      const newState1 = [...prosState];
+      const newState2 = [...consState];
+      newState1.splice(dragId,1);
+      // newState2.splice(newState2.length-2,0,{value: item, id: uidGenerator()});
+      newState2.unshift({value: item, id: uidGenerator()});
+      setProsState(newState1);
+      setConsState(newState2);
+    }
+    if(dragHeading === 'Cons') {
+      const newState1 = [...prosState];
+      const newState2 = [...consState];
+      newState2.splice(dragId,1);
+      // newState1.splice(newState2.length-2,0,{value: item, id: uidGenerator()});
+      newState1.unshift({value: item, id: uidGenerator()});
+      setProsState(newState1);
+      setConsState(newState2);
+    }
   }
 
 
@@ -93,13 +117,13 @@ function List({ heading, globId }) {
     let elements = [];
     if (heading === 'Pros') {
       elements = prosState.map(({ value, id }, index) => {
-        return <ListItem value={value} id={id} key={index} index={index} heading={heading} globId={globId} inputHandler={inputHandler} dragStartHandler={dragStartHandler}/>
+        return <ListItem value={value} id={id} index={index} heading={heading} globId={globId} inputHandler={inputHandler} dragStartHandler={dragStartHandler}/>
       });
       return elements;
     }
     if (heading === 'Cons') {
       elements = consState.map(({ value, id }, index) => {
-        return <ListItem value={value} id={id} key={index} index={index} heading={heading} globId={globId} inputHandler={inputHandler} dragStartHandler={dragStartHandler}/>
+        return <ListItem value={value} id={id} index={index} heading={heading} globId={globId} inputHandler={inputHandler} dragStartHandler={dragStartHandler}/>
       });
       return elements;
     }
