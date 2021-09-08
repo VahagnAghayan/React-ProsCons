@@ -1,35 +1,31 @@
-import React from 'react';
-// import {useDispatch} from 'react-redux';
+import { memo } from "react";
 
-import './List-item.css';
+import "./List-item.css";
 
-function ListItem({value,id,index,heading,globId,inputHandler,dragStartHandler}) {
+function ListItem({
+  value,
+  id,
+  index,
+  heading,
+  globId,
+  inputHandler,
+  dragStartHandler,
+}) {
 
-  // const dispatch = useDispatch();
-
-  return(
-    <li className='item-li'>
-      <input type='text' value={value} draggable='true' 
-      onChange={(e) => inputHandler(e,id,index,heading,globId)}
-      onDragStart={(e) => dragStartHandler(e,id,index,heading,globId)}></input>
-      {/* <input type='text' value={value} draggable='true' onInput = {(e) => {setTimeout(() => {
-        e.target.onChange=(e) => {inputHandler(e,id,index,heading,globId)};
-      }, 500)}}></input> */}
-      {/* <input type='text' value={value} draggable='true' onChange={(e) => {
-        dispatch({
-          type: 'onchange',
-          payload: {
-            value: e.target.value,
-            id: id,
-            index: index,
-            heading: heading,
-            globId: globId
-          }
-        })
-      }}></input> */}
+  return (
+    <li className="item-li">
+      <input
+        type="text"
+        value={value}
+        draggable="true"
+        onChange={(e) => inputHandler(e.target.value, index, heading )}
+        onDragStart={(e) => {
+          e.dataTransfer.setData("currentHeading", heading);
+          e.dataTransfer.setData("currentValue", e.target.value);
+        }}
+      />
     </li>
   );
-
 }
 
-export default ListItem;
+export default memo(ListItem);
